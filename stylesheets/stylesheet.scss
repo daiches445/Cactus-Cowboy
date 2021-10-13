@@ -1,0 +1,47 @@
+#canvas{ 
+    position: absolute;
+    width: 1200px;
+    height: 600px;
+    // background-color: royalblue;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    border:solid 5px;
+    border-radius: 5%;
+}
+body{
+    margin: 0em;
+    padding: 0em;
+    background-image: url('backrounds_body/background-desert.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    text-align: center;
+    h1{
+        margin: 0;
+        font-family: 'Ewert';
+        font-size: 80px;
+        span{
+            font-family: 'Pacifico', cursive;
+            font-size: 70px;
+        }
+        }
+   
+}
+// }
+// #board{
+//     position: absolute;
+//     top: 10%;
+//     left: 25%;
+//     background-color: salmon;
+//     width: 800px;
+//     height: 600px;
+//     #player{
+//         width: 7%;
+//         height: 7%;
+//         background-color: saddlebrown;
+//         position: absolute;
+//         bottom: 0;
+        
+        
+//     }
+// }
