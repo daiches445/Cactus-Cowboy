@@ -1,13 +1,19 @@
 #canvas {
   position: absolute;
-  width: 90%;
-  height: 70%;
+  width: 1200px;
+  height: 600px;
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   border: solid 5px;
-  border-radius: 5%;
+  border-radius: 5px;
+}
+
+#not-supprted {
+  display: none;
+  font-size: 60px;
+  font-family: "Bungee";
 }
 
 body {
@@ -29,4 +35,18 @@ body h1 span {
   font-family: 'Pacifico', cursive;
   font-size: 70px;
 }
+
 /*# sourceMappingURL=stylesheet.css.map */
+@media screen and (max-width: 1000px) {
+  #canvas {
+    display: none;
+    width: 1000px;
+    height: 600px;
+  }
+
+  #not-supprted {
+    display: block;
+    font-size: 60px;
+    font-family: "Bungee";
+  }
+}
