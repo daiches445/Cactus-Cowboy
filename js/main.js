@@ -1,130 +1,132 @@
 const canvas1 = document.getElementById('canvas');
 const ctx = canvas1.getContext('2d');
 
-
-
 ctx.font = "15px Ewert";
 
 const gunShotSound = new Audio()
 gunShotSound.src = document.getElementById('gun_shot_sound').src
 gunShotSound.playbackRate = 3;
 
-//תמונות
+
+//pics
 const playerImg = document.getElementById('character');
 const playerImg_left = document.getElementById('character_left');
 const backroundImg = document.getElementById('backround');
 const cactusImg = document.getElementById('cactus');
-const enemyImg_1= document.getElementById('enemy_1');
+const enemyImg_1 = document.getElementById('enemy_1');
 const gun_shot_pic = document.getElementById('gun_shot');
 const enterKey_pic = document.getElementById('enter_key');
 
+const playerSize = 35;
+const vertical_pos = canvas1.height - playerSize - 13;
 
-const playerSize=35;
-const vertical_pos = canvas1.height-playerSize-13;
 // var drawCactus = true;
-var timer  = 0;
+var timer = 0;
 var passObs = false;
 var cactusCount = 0;
- 
-//אובייקט-"רקע" backround
-const BG={
-    x1: 0,//מיקום ראשון
-    x2: canvas1.width,//ציור רקע שני
-    y: 0,
-    BG_speed:2,
+var firstCactusPosX = -59;
+var secCactusPosX = Math.floor(Math.random() * 20) + 80
 
+//backroung object
+const BG = {
+  x1: 0,//Init position
+  x2: canvas1.width,//x.cordinate for looping and redraw backround
+  y: 0,
+  BG_speed: 2.6,
 }
 
 
-var c=new Character(canvas1.height);
-var obs = [new Obstacle(-39),new Obstacle(Math.floor(Math.random()*50)+50)];
+
+var c = new Character(canvas1.height);
+var obs = [new Obstacle(firstCactusPosX), new Obstacle(secCactusPosX)];
 var enemy = [new Enemy()]
-var gun_shot=new GunShot();
+var gun_shot = new GunShot();
 
 
-function drawBG(){
+function drawBG() {
 
-  if(BG.x2<=0){
-    BG.x1=0;
-    BG.x2=canvas1.width;
+  if (BG.x2 <= 0) {
+    BG.x1 = 0;
+    BG.x2 = canvas1.width;
   }
-  ctx.drawImage(backroundImg,BG.x1,BG.y,canvas1.width,canvas1.height)
-  ctx.drawImage(backroundImg,BG.x2,BG.y,canvas1.width,canvas1.height)
+  ctx.drawImage(backroundImg, BG.x1, BG.y, canvas1.width, canvas1.height)
+  ctx.drawImage(backroundImg, BG.x2, BG.y, canvas1.width, canvas1.height)
 
-  BG.x1-=BG.BG_speed;
-  BG.x2-=BG.BG_speed;
+  BG.x1 -= BG.BG_speed;
+  BG.x2 -= BG.BG_speed;
 
 }
-
 
 var key_up = false;
 var key_enter = false;
-const speed =10;
 
 
 
-let frame_x=0;
+let frame_x = 0;
 
 
-function AddKeyDOWN(){
+function AddKeyDOWN() {
 
-  if(event.code == "ArrowUp")key_up = true;
-  if(event.keyCode==13)key_enter = true;
+  if (event.code == "ArrowUp") key_up = true;
+  if (event.keyCode == 13) key_enter = true;
   console.log(event.keyCode)
 }
 
-addEventListener('keydown',AddKeyDOWN)
+addEventListener('keydown', AddKeyDOWN)
 
-addEventListener('keyup',(e)=>{
+addEventListener('keyup', (e) => {
 
-    if(e.code == "ArrowUp")key_up = false;
+  if (e.code == "ArrowUp") key_up = false;
 
 })
 
-var AnimFrame;//משתנה זה יאפשר את עצירת המשחק
+var AnimFrame;//for later game stopage
+
 
 //משתנים לפתיח - אנטר מרצד
-var enterKey_s=100;
+//floating 'Enter Key' Intro vars
+var enterKey_s = 100;
 var growth = 0.6;
 
-debugger;
 
-function main() {//פונקצייה ראשית שחוזרת על עצמה
+function main() {//main function loop פונקצייה ראשית שחוזרת על עצמה
 
-  ctx.clearRect(0,0,canvas1.width,canvas1.height);//ניקוי הקאנווס מהתמונה הקודמת
+  ctx.clearRect(0, 0, canvas1.width, canvas1.height);//ניקוי הקאנווס מהתמונה הקודמת
 
-  if(key_enter){//המשחק או סימן 'האנטר' לפני
+  if (key_enter) {//המשחק או סימן 'האנטר' לפני
     drawBG();//ציור הרקע
 
-    ctx.fillText('Cactus:'+cactusCount,12,12);//כתיבת התוצאה בחלק השמאלי עליון
+    ctx.fillText('Cactus:' + cactusCount, 12, 12);//כתיבת התוצאה בחלק השמאלי עליון
 
     c.update();//שינוי ערכי השחקן
     c.draw();//ציור השחקן על המסך
-  
-    if(cactusCount%10==0){//כל 10 קקטסוים שהחשקן עבר תופיע דמות קטנה רצה
+
+    if (cactusCount % 10 == 0) {//כל 10 קקטסוים שהחשקן עבר תופיע דמות קטנה רצה
       enemy.shift();
       enemy.push(new Enemy());
+      firstCactusPosX += 2;
+      secCactusPosX += 5;
     }
     enemy[0].draw();
-  
+
     obs[0].draw();//ציור הקקטוסים
     obs[1].draw();
   }
-  else{
-    ctx.drawImage(enterKey_pic,canvas1.width/2-50+growth,canvas1.height/2-55+growth,enterKey_s+=growth,enterKey_s+=growth)
+  else {
+    ctx.drawImage(enterKey_pic, canvas1.width / 2 - 50 + growth, canvas1.height / 2 - 55 + growth, enterKey_s += growth, enterKey_s += growth)
 
-    if(enterKey_s>107)growth=-0.25;
-    if(enterKey_s<93)growth =0.25;
+    if (enterKey_s > 107) growth = -0.25;
+    if (enterKey_s < 93) growth = 0.25;
   }
- 
+
   AnimFrame = requestAnimationFrame(main);
 
   CheckCollision();//
 
-  if(passObs){//השמת קקטוסים חדשים לאחר מעבר קקטוס
+  if (passObs) {//השמת קקטוסים חדשים לאחר מעבר קקטוס
     obs.shift();
-    obs.push(new Obstacle(Math.floor(Math.random()*50)+60))
-    passObs =false;
+    obs.push(new Obstacle(Math.floor(Math.random() * 50) + 60))
+    passObs = false;
   }
 }
 
@@ -133,30 +135,32 @@ main();
 
 
 
-function CheckCollision()
-{
-  if(((c.posOnCavsY+playerSize-10>obs[0].posY)&&//בדיקת ערכי ה -איקס וה-וואי של השחקן כנגד ערכי הקקטוסים והדמויות הרצות  ,במידה וחופפים יעצר המשחק
-  ((c.posOnCavsX+10>=obs[0].posX)&&(c.posOnCavsX-5<=obs[0].posX+obs[0].width-20)))||((c.posOnCavsY+playerSize-10>enemy[0].posOnCavsY)&&
-  ((c.posOnCavsX+10>=enemy[0].posOnCavsX)&&(c.posOnCavsX-5<=enemy[0].posOnCavsX+enemy[0].width-10))))
-  {
+function CheckCollision() {
+  if (((c.posOnCavsY + playerSize - 10 > obs[0].posY) &&//בדיקת ערכי ה -איקס וה-וואי של השחקן כנגד ערכי הקקטוסים והדמויות הרצות  ,במידה וחופפים יעצר המשחק
+    ((c.posOnCavsX + 10 >= obs[0].posX) && (c.posOnCavsX - 5 <= obs[0].posX + obs[0].width - 20))) || ((c.posOnCavsY + playerSize - 10 > enemy[0].posOnCavsY) &&
+      ((c.posOnCavsX + 10 >= enemy[0].posOnCavsX) && (c.posOnCavsX - 5 <= enemy[0].posOnCavsX + enemy[0].width - 10)))) {
+
     cancelAnimationFrame(AnimFrame);
     var u = sessionStorage.getItem('user')//השמת התוצאה הגבוהה ביותר
     u = JSON.parse(u)
-    if(u.high_score<cactusCount){
-      alert("New High Score! :"+cactusCount );
+    if (u && u.high_score < cactusCount) {
+      alert("New High Score! :" + cactusCount);
       u.high_score = cactusCount;
-      localStorage.setItem(u.user_name,JSON.stringify(u));
-      sessionStorage.setItem('user',JSON.stringify(u)); 
+      localStorage.setItem(u.user_name, JSON.stringify(u));
+      sessionStorage.setItem('user', JSON.stringify(u));
     }
-    else{
-      alert('Better luck next time!');
-      
+    else {
+      window.location.reload();
     }
-    window.location.reload();
+
   }
 
-  if(obs[0].posX+obs[0].width<c.posOnCavsX){passObs = true;cactusCount++;}//העלאת הסופר
-     
+  if (obs[0].posX + obs[0].width < c.posOnCavsX)//העלאת הסופר
+  {
+    passObs = true;
+    cactusCount++;
+  }
+
 }
 
 
